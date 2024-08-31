@@ -3,29 +3,25 @@ using UnityEngine;
 
 public class GravityObject : MonoBehaviour
 {
-    [SerializeField] private GameObject template;
-    [SerializeField] private int maxRadius;
-    public float gravityForce = 1;
-
-    private List<GameObject> orbiters = new List<GameObject>();
+    public float Gravity = 1;
 
     void AddOrbiter() 
     {
-        if(orbiters == null) 
+        if(_orbiters == null) 
         {
-            orbiters = new List<GameObject>();
+            _orbiters = new List<GameObject>();
         }
 
-        var sphere = Instantiate(template).GetComponent<Orbiter>();
+        var sphere = Instantiate(_orbiter).GetComponent<Orbiter>();
         sphere.center = this;
         sphere.Randomize();
 
-        orbiters.Add(sphere.gameObject);
+        _orbiters.Add(sphere.gameObject);
     }
 
     public void GetOrbiter(GameObject orbiter)
     {
-        orbiters.Add(orbiter);
+        _orbiters.Add(orbiter);
     }
 
     private void Update()
@@ -43,11 +39,11 @@ public class GravityObject : MonoBehaviour
             AddOrbiter();
         }
 
-        if (orbiters == null) return;
+        if (_orbiters == null) return;
         if (Time.frameCount % 25 == 0) 
         { 
             GameObject it = null;
-            foreach (var o in orbiters)
+            foreach (var o in _orbiters)
             {
                 if (Vector3.Distance(o.transform.position, transform.position) > 50)
                 {
@@ -62,7 +58,7 @@ public class GravityObject : MonoBehaviour
 
     void Kill(GameObject it) 
     {
-        orbiters.Remove(it);
+        _orbiters.Remove(it);
         Destroy(it);        
     }
 
@@ -71,4 +67,6 @@ public class GravityObject : MonoBehaviour
         Kill(collision.gameObject);
     }
 
+    [SerializeField] private GameObject _orbiter;
+    private List<GameObject> _orbiters = new List<GameObject>();
 }

@@ -19,7 +19,7 @@ public class VirtualJoystick : MonoBehaviour
             {
                 UpdateTouch(touch.position);
             }
-            else if (touch.phase == TouchPhase.Ended)
+            else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
             {
                 ReleaseTouch(touch.position);
             }
@@ -39,44 +39,63 @@ public class VirtualJoystick : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        if (_updateMass) 
+        {
+            _mass += 4f;
+        }
+    }
+
     private void StartTouch(Vector3 touch) 
     {
-        _cubeInstance = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        _cubeInstance.transform.localScale = Vector3.one * .2f;
-        _cubeInstance.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(touch.x, touch.y, 10f));
-        _cubeInstance.GetComponent<Renderer>().material = _sphereMaterial;
-        _cubeInstance.GetComponent<Collider>().enabled = false;
+        if (_cubeInstance == null) 
+        {
+            _cubeInstance = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            _cubeInstance.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(touch.x, touch.y, 10f)); ;
+            _cubeInstance.transform.localScale = Vector3.one * .2f;
+            _cubeInstance.GetComponent<Renderer>().material = _sphereMaterial;
 
-        _initialTouchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.x, touch.y, 10f));
+            _initialTouch = touch;
+            _updateMass = true;
+        }
     }
 
     private void UpdateTouch(Vector3 touch)
     {
-        _mass = _mass + 1.5f;
+        if (_cubeInstance != null)
+        {
+            var touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.x, touch.y, 10f));
+            var direction = touchPosition - _cubeInstance.transform.position;
 
-        Vector3 touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.x, touch.y, 10f));
-        Vector3 direction = touchPosition - _cubeInstance.transform.position;
-        _cubeInstance.transform.rotation = Quaternion.LookRotation(direction);
-        _cubeInstance.transform.localScale = Vector3.one * _mass / 1000;
+            _cubeInstance.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(_initialTouch.x, _initialTouch.y, 10f)); ;
+            _cubeInstance.transform.rotation = Quaternion.LookRotation(direction);
+            _cubeInstance.transform.localScale = Vector3.one * _mass / 1000;
+        }
     }
 
     private void ReleaseTouch(Vector3 touch) 
     {
+        if (_cubeInstance != null)
+        {
+            var touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.x, touch.y, 10f));
+            var velocity = 600 * Vector3.Distance(_cubeInstance.transform.position, touchPosition);
+            OnRelease.Invoke(_cubeInstance.transform.position, _cubeInstance.transform.eulerAngles, velocity, _mass);
 
-        Vector3 touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.x, touch.y, 10f));
-        Vector3 direction = (touchPosition - _cubeInstance.transform.position).normalized;
-        float velocity = 750 * Vector3.Distance(_cubeInstance.transform.position, touchPosition);
+            _updateMass = false;
+            _mass = 25;
+        }
 
-        OnRelease.Invoke(_cubeInstance.transform.position, _cubeInstance.transform.eulerAngles, velocity, _mass);
-        _mass = 0;
-
-        _cubeInstance.gameObject.SetActive(false);
         Destroy(_cubeInstance);
+        _cubeInstance = null;
     }
 
+
+
     [SerializeField] private Material _sphereMaterial;
+    private Vector3 _initialTouch;
     private GameObject _cubeInstance = null;
-    private Vector3 _initialTouchPosition;
-    private float _mass = 0;
+    private float _mass = 25;
+    private bool _updateMass = false;
 
 }

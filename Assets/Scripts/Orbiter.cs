@@ -71,7 +71,7 @@ public class Orbiter : MonoBehaviour
 
         float dist = difference.magnitude;
         Vector3 gravDirection = difference.normalized;
-        float grav = center.gravityForce * rig.mass / (dist * dist);
+        float grav = center.Gravity * rig.mass / (dist * dist);
         Vector3 gravVector = gravDirection * grav;
        
         rig.AddForce(gravVector, ForceMode.Acceleration);
