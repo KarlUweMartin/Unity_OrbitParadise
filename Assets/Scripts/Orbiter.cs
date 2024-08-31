@@ -39,6 +39,40 @@ public class Orbiter : MonoBehaviour
         rig.mass = Mass;
         transform.localScale = Vector3.one * Mass / 1000;
         rig.AddForce(rig.transform.forward * Velocity, ForceMode.Impulse);
+
+        var sound = GetComponent<OrbiterSound>();
+        var octave = 3;
+        var note = string.Empty;
+        if (Mass < 100) 
+        {
+            note = "B";
+        }
+        else if (Mass > 100 && Mass <= 200)
+        {
+            note = "A";
+        }
+        else if (Mass > 200 && Mass <= 300)
+        {
+            note = "G";
+        }
+        else if (Mass > 300 && Mass <= 400)
+        {
+            note = "F";
+        }
+        else if (Mass > 400 && Mass <= 500)
+        {
+            note = "E";
+        }
+        else if (Mass > 500 && Mass <= 600)
+        {
+            note = "D";
+        }
+        else if (Mass > 600)
+        {
+            note = "C";
+        }
+
+        sound.SetNoteAndOctave(note , octave);
     }
 
     public void Randomize()

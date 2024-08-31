@@ -41,7 +41,7 @@ public class VirtualJoystick : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_updateMass) 
+        if (_updateMass && _mass < 800) 
         {
             _mass += 4f;
         }
