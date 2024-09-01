@@ -2,28 +2,23 @@
 
 public class Orbiter : MonoBehaviour
 {
-    public float smoothSpeed = 25;
-    [SerializeField] Rigidbody rig;
-    [HideInInspector] public GravityObject center;
-
+    [HideInInspector] public GravityObject GravitiObject;
     public Vector3 StartPosition, StartRotation;
-    public float Mass;
+    public int Mass;
     public float Velocity;
 
     private void Start()
     {
-        Gradient gradient = new Gradient();
+        var gradient = new Gradient();
         GradientColorKey[] colorKey;
         GradientAlphaKey[] alphaKey;
 
-        // Populate the color keys at the relative time 0 and 1 (0 and 100%)
         colorKey = new GradientColorKey[2];
         colorKey[0].color = Random.ColorHSV(0f, 1f, 1f, 1f, 1f, 1f);
         colorKey[0].time = 0.0f;
         colorKey[1].color = Color.white;
         colorKey[1].time = 1.0f;
 
-        // Populate the alpha  keys at relative time 0 and 1  (0 and 100%)
         alphaKey = new GradientAlphaKey[2];
         alphaKey[0].alpha = 1.0f;
         alphaKey[0].time = 0.0f;
@@ -36,43 +31,67 @@ public class Orbiter : MonoBehaviour
 
         transform.position = StartPosition;
         transform.eulerAngles = StartRotation;
-        rig.mass = Mass;
+        _rig.mass = Mass;
         transform.localScale = Vector3.one * Mass / 1000;
-        rig.AddForce(rig.transform.forward * Velocity, ForceMode.Impulse);
+        _rig.AddForce(_rig.transform.forward * Velocity, ForceMode.Impulse);
 
-        var sound = GetComponent<OrbiterSound>();
-        var octave = 3;
-        var note = string.Empty;
-        if (Mass < 100) 
+        if (_audio) 
         {
-            note = "B";
-        }
-        else if (Mass > 100 && Mass <= 200)
-        {
-            note = "A";
-        }
-        else if (Mass > 200 && Mass <= 300)
-        {
-            note = "G";
-        }
-        else if (Mass > 300 && Mass <= 400)
-        {
-            note = "F";
-        }
-        else if (Mass > 400 && Mass <= 500)
-        {
-            note = "E";
-        }
-        else if (Mass > 500 && Mass <= 600)
-        {
-            note = "D";
-        }
-        else if (Mass > 600)
-        {
-            note = "C";
-        }
+            var sound = GetComponent<OrbiterSound>();
+            int octave = 4;
+            var note = string.Empty;
+            int step = 50;
 
-        sound.SetNoteAndOctave(note , octave);
+            if (Mass > 600)
+            {
+                octave = 3;
+            }
+   
+            int index = (Mass > 50) ? (Mass - 1) / step : 0;   
+            index = (Mass > 600) ? index - 12 : index;
+ 
+            switch (index)
+            {
+                case 0: note = "B"; break;
+                case 1: note = "A"; break;
+                case 2: note = "G"; break;
+                case 3: note = "F"; break;
+                case 4: note = "E"; break;
+                case 5: note = "D"; break;
+                case 6: note = "C"; break;
+                default: note = "C"; break; 
+            }
+
+            sound.SetNoteAndOctave(note , octave);
+            Debug.Log(note + " " + octave);
+        }
+    }
+
+    private void Update()
+    {
+        if (Time.frameCount % 100 == 0)
+        {
+            if (Vector3.Distance(transform.position, GravitiObject.transform.position) > 500)
+            {
+                DestroyOrbiter();
+            }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        var difference = GravitiObject.transform.position - transform.position;
+        var dist = difference.magnitude;
+        var gravDirection = difference.normalized;
+        var grav = Models.Gravity * _rig.mass / (dist * dist);
+        var gravVector = gravDirection * grav;
+
+        _rig.AddForce(gravVector, ForceMode.Acceleration);
+    }
+
+    public void DestroyOrbiter() 
+    {
+        Destroy(gameObject);
     }
 
     public void Randomize()
@@ -80,45 +99,11 @@ public class Orbiter : MonoBehaviour
         StartRotation = new Vector3(Random.Range(0, 359), Random.Range(0, 359), Random.Range(0, 359));
         Mass = Random.Range(15, 50);
         Velocity = Random.Range(15, 50);
-        StartPosition = center.transform.position + new Vector3(Random.Range(-12, 12), Random.Range(-12, 12), Random.Range(-12, 12));
+        StartPosition = GravitiObject.transform.position + new Vector3(Random.Range(-12, 12), Random.Range(-12, 12), Random.Range(-12, 12));
     }
 
-    public void SetValues(float newMass, float newVelocity, Vector3 startPos, Vector3 startRot) 
-    {
-        StartRotation = startRot;
-        StartPosition = startPos;
-        Mass = newMass;
-        Velocity = newVelocity;       
-    }
+    [SerializeField] private Rigidbody _rig;
+    [SerializeField] private bool _audio = false;
+    [SerializeField] private int _maxDistance = 500;
 
-    public void DebugValues() 
-    {
-        Debug.Log("Position: "+StartPosition);
-        Debug.Log("Rotation: "+StartRotation);
-        Debug.Log("Mass: "+Mass);
-        Debug.Log("Velocity: "+Velocity);
-    }
-
-    void FixedUpdate()
-    {
-        Vector3 difference = center.transform.position - transform.position;
-
-        float dist = difference.magnitude;
-        Vector3 gravDirection = difference.normalized;
-        float grav = center.Gravity * rig.mass / (dist * dist);
-        Vector3 gravVector = gravDirection * grav;
-       
-        rig.AddForce(gravVector, ForceMode.Acceleration);
-
-       /* if (rig.velocity != Vector3.zero)
-        {
-            Quaternion rotation = Quaternion.LookRotation((transform.position + GetComponent<Rigidbody>().velocity) - transform.position);
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotation,  Time.deltaTime * smoothSpeed);
-        }
-        else
-        {
-            transform.rotation = Quaternion.Euler(Vector3.zero);
-        }*/
-        
-    }
 }
