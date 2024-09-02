@@ -71,7 +71,7 @@ public class Orbiter : MonoBehaviour
     {
         if (Time.frameCount % 100 == 0)
         {
-            if (Vector3.Distance(transform.position, GravitiObject.transform.position) > 500)
+            if (Vector3.Distance(transform.position, GravitiObject.transform.position) > 350)
             {
                 DestroyOrbiter();
             }

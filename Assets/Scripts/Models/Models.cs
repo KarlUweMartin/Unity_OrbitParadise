@@ -1,3 +1,4 @@
+using UnityEngine;
 using UnityEngine.Events;
 
 public static class Models
@@ -18,7 +19,7 @@ public static class Models
         }
     }
 
-    public static UnityEvent<float> OnOrbitCameraDistanceChanged = new();
+
     private static float _orbitCameraDistance = 20f;
     public static float OrbitCameraDistance
     {
@@ -27,7 +28,8 @@ public static class Models
         {
             if (value != _orbitCameraDistance)
             {
-                OnOrbitCameraDistanceChanged.Invoke(value);
+                var cam = Camera.main.transform;
+                cam.localPosition = new Vector3(0,0, -value);
             }
 
             _orbitCameraDistance = value;

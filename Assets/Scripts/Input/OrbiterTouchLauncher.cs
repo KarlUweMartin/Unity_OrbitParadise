@@ -49,9 +49,9 @@ public class OrbiterTouchLauncher : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_isTouching && _mass < 500)
+        if (_isTouching /*&& _mass < 500*/)
         {
-            _mass += 2;
+            _mass += 4;
         }
     }
 
@@ -59,15 +59,15 @@ public class OrbiterTouchLauncher : MonoBehaviour
     {
         if (_cubeInstance == null)
         {
+            var camDist = Vector3.Distance(Camera.main.transform.position, _gravityObject.transform.position);
             _cubeInstance = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            _cubeInstance.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(touch.x, touch.y + _fingerTipOffset, 20)); ;
+            _cubeInstance.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(touch.x, touch.y + _fingerTipOffset, camDist)); ;
             _cubeInstance.transform.localScale = Vector3.one * _mass / 1000;
             _cubeInstance.GetComponent<Renderer>().material = _sphereMaterial;
 
             _initialTouch = touch;
             _isTouching = true;
             _indicatorLine.enabled = true;
-            _dataText.enabled = true;
         }
     }
 
@@ -76,19 +76,17 @@ public class OrbiterTouchLauncher : MonoBehaviour
         if (_cubeInstance != null)
         {
             _isTouching = true;
-            var touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.x, touch.y + _fingerTipOffset, 20));
+            var camDist = Vector3.Distance(Camera.main.transform.position, _gravityObject.transform.position);
+            var touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.x, touch.y + _fingerTipOffset, camDist));
             var direction = touchPosition - _cubeInstance.transform.position;
-            _velocity = Mathf.Min(8000, 600 * Vector3.Distance(_cubeInstance.transform.position, touchPosition));
+            _velocity = Mathf.Min(8000, 250 * Vector3.Distance(_cubeInstance.transform.position, touchPosition));
 
-            _cubeInstance.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(_initialTouch.x, _initialTouch.y + _fingerTipOffset, 20)); ;
+            _cubeInstance.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(_initialTouch.x, _initialTouch.y + _fingerTipOffset, camDist)); ;
             _cubeInstance.transform.rotation = Quaternion.LookRotation(direction);
             _cubeInstance.transform.localScale = Vector3.one * _mass / 1000;
 
             _indicatorLine.SetPosition(0, _cubeInstance.transform.position);
             _indicatorLine.SetPosition(1, touchPosition);
-
-            _dataText.rectTransform.anchoredPosition = new Vector2(touch.x - Screen.width / 2, touch.y - Screen.height / 2);
-            _dataText.text = $"{_mass}\n{(int)_velocity}";
         }
     }
 
@@ -105,7 +103,6 @@ public class OrbiterTouchLauncher : MonoBehaviour
     private void FinishTouch()
     {
         _indicatorLine.enabled = false;
-        _dataText.enabled = false;
         _mass = 25; 
         _velocity = 0;
         _isTouching = false;
@@ -127,7 +124,6 @@ public class OrbiterTouchLauncher : MonoBehaviour
     [SerializeField] private GravityObject _gravityObject;
     [SerializeField] private Material _sphereMaterial;
     [SerializeField] private LineRenderer _indicatorLine;
-    [SerializeField] private TextMeshProUGUI _dataText;
 
     private Vector3 _initialTouch;
     private GameObject _cubeInstance = null;

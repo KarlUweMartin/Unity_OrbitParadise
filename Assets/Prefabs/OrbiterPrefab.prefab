@@ -179,7 +179,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 15
+  m_Time: 3
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
@@ -374,6 +374,7 @@ MonoBehaviour:
   Velocity: 0
   _rig: {fileID: -400934440139013168}
   _audio: 0
+  _maxDistance: 500
 --- !u!114 &7661966704786855405
 MonoBehaviour:
   m_ObjectHideFlags: 0
