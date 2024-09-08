@@ -3,23 +3,6 @@ using UnityEngine.Events;
 
 public static class Models
 {
-    public static UnityEvent<float> OnOrbitCameraSpeedChanged = new();
-    private static float _orbitCameraSpeed = 7.5f;
-    public static float OrbitCameraSpeed 
-    { 
-        get => _orbitCameraSpeed;
-        set 
-        {
-            if (value != _orbitCameraSpeed) 
-            {
-                OnOrbitCameraSpeedChanged.Invoke(value);
-            }
-
-            _orbitCameraSpeed = value;
-        }
-    }
-
-
     private static float _orbitCameraDistance = 20f;
     public static float OrbitCameraDistance
     {
@@ -28,8 +11,9 @@ public static class Models
         {
             if (value != _orbitCameraDistance)
             {
-                var cam = Camera.main.transform;
-                cam.localPosition = new Vector3(0,0, -value);
+                var cam = Camera.main;
+                cam.transform.localPosition = new Vector3(0,0, -value);
+                cam.fieldOfView = Utils.RemapRange(value, 5, 35, 75, 90);
             }
 
             _orbitCameraDistance = value;
@@ -50,5 +34,15 @@ public static class Models
 
             _gravity = value;
         }
+    }
+
+    public static bool TouchingUi { get; set; } = false;
+}
+
+public static class Utils
+{
+    public static float RemapRange(float value, float A, float B, float X, float Y)
+    {
+        return (value - A) / (B - A) * (Y - X) + X;
     }
 }

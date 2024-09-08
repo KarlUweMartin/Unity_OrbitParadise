@@ -31,9 +31,9 @@ public class Orbiter : MonoBehaviour
 
         transform.position = StartPosition;
         transform.eulerAngles = StartRotation;
+        transform.localScale = Vector3.one * Mass / 2500;
         _rig.mass = Mass;
-        transform.localScale = Vector3.one * Mass / 1000;
-        _rig.AddForce(_rig.transform.forward * Velocity, ForceMode.Impulse);
+        _rig.AddForce(_rig.transform.forward * Velocity, ForceMode.Acceleration);
 
         if (_audio) 
         {

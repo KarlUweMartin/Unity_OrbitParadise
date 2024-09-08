@@ -10,6 +10,8 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
     public void OnPointerDown(PointerEventData eventData)
     {
         OnDrag(eventData);
+
+        Models.TouchingUi = true;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -17,8 +19,8 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
         Vector2 pos;
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(_joystickBackground, eventData.position, eventData.pressEventCamera, out pos))
         {
-            pos.x = (pos.x / _joystickBackground.sizeDelta.x);
-            pos.y = (pos.y / _joystickBackground.sizeDelta.y);
+            pos.x = pos.x / _joystickBackground.sizeDelta.x;
+            pos.y = pos.y / _joystickBackground.sizeDelta.y;
 
             InputVector = new Vector2(pos.x * 2, pos.y * 2);
             InputVector = (InputVector.magnitude > 1.0f) ? InputVector.normalized : InputVector;
@@ -34,6 +36,8 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
         InputVector = Vector2.zero;
         _joystickKnob.anchoredPosition = Vector2.zero;
         InputDown = false;
+
+        Models.TouchingUi = false;
     }
 
     [SerializeField] private RectTransform _joystickBackground;

@@ -16,14 +16,32 @@ ShaderVariantCollection:
   - first: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
     second:
       variants:
+      - keywords: DIRECTIONAL LIGHTPROBE_SH
+        passType: 4
+      - keywords: DIRECTIONAL LIGHTPROBE_SH _EMISSION
+        passType: 4
       - keywords: LIGHTPROBE_SH _EMISSION
         passType: 4
+      - keywords: DIRECTIONAL
+        passType: 5
       - keywords: 
+        passType: 8
+  - first: {fileID: 6, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+      - keywords: SHADOWS_DEPTH
         passType: 8
   - first: {fileID: 104, guid: 0000000000000000f000000000000000, type: 0}
     second:
       variants:
       - keywords: 
+        passType: 0
+  - first: {fileID: 106, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: _SUNDISK_SIMPLE
         passType: 0
   - first: {fileID: 211, guid: 0000000000000000f000000000000000, type: 0}
     second:
@@ -94,3 +112,16 @@ ShaderVariantCollection:
       variants:
       - keywords: BLOOM
         passType: 0
+  - first: {fileID: 4800000, guid: b581469bb435d5d4eaaf454a2ebe24f3, type: 3}
+    second:
+      variants:
+      - keywords: DIRECTIONAL
+        passType: 4
+      - keywords: DIRECTIONAL LIGHTPROBE_SH
+        passType: 4
+      - keywords: POINT
+        passType: 5
+      - keywords: 
+        passType: 10
+      - keywords: 
+        passType: 11
