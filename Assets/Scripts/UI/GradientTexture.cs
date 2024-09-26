@@ -18,8 +18,6 @@ public class GradientTexture : MonoBehaviour
         }
 
         gradientTexture.Apply();
-
-        // Apply the texture to the material
         _image.material.mainTexture = gradientTexture;
     }
 }
