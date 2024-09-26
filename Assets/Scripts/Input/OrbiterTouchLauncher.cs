@@ -14,7 +14,7 @@ public class OrbiterTouchLauncher : MonoBehaviour
             return;
         }
 
-        if (Input.touchCount > 0)
+        if (Input.touchCount == 1)
         {
             Touch touch = Input.GetTouch(0);
 
@@ -48,7 +48,7 @@ public class OrbiterTouchLauncher : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_isTouching /*&& _mass < 500*/)
+        if (_isTouching && _mass < 700)
         {
             _mass += 4;
         }
@@ -61,7 +61,7 @@ public class OrbiterTouchLauncher : MonoBehaviour
             var camDist = Vector3.Distance(Camera.main.transform.position, _gravityObject.transform.position);
             _cubeInstance = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             _cubeInstance.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(touch.x, touch.y, camDist)); ;
-            _cubeInstance.transform.localScale = Vector3.one * _mass / 2500;
+            _cubeInstance.transform.localScale = Vector3.one * .12f;
             _cubeInstance.GetComponent<Renderer>().material = _sphereMaterial;
 
             _initialTouch = touch;
@@ -82,7 +82,7 @@ public class OrbiterTouchLauncher : MonoBehaviour
 
             _cubeInstance.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(_initialTouch.x, _initialTouch.y, camDist)); ;
             _cubeInstance.transform.rotation = Quaternion.LookRotation(direction);
-            _cubeInstance.transform.localScale = Vector3.one * _mass / 2500;
+            _cubeInstance.transform.localScale = Vector3.one * Utils.RemapRange(_mass, 0, 2000, .12f, .5f);
 
             _indicatorLine.SetPosition(0, _cubeInstance.transform.position);
             _indicatorLine.SetPosition(1, touchPosition);

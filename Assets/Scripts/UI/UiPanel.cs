@@ -18,18 +18,16 @@ public class UiPanel : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             _rect = GetComponent<RectTransform>();
         }
 
-        _rect.anchoredPosition = new Vector2(open ? 0 : -325, 15);
+        _rect.anchoredPosition = new Vector2(open ? 0 : -150, 15);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        Debug.Log("up");
         Models.TouchingUi = true;
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("down");
         Models.TouchingUi = false;
     }
 

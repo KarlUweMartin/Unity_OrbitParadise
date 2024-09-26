@@ -31,7 +31,7 @@ public class Orbiter : MonoBehaviour
 
         transform.position = StartPosition;
         transform.eulerAngles = StartRotation;
-        transform.localScale = Vector3.one * Mass / 2500;
+        transform.localScale = Vector3.one * Utils.RemapRange(Mass, 0, 2000, .12f, .5f);
         _rig.mass = Mass;
         _rig.AddForce(_rig.transform.forward * Velocity, ForceMode.Acceleration);
 
@@ -47,7 +47,7 @@ public class Orbiter : MonoBehaviour
                 octave = 3;
             }
    
-            int index = (Mass > 50) ? (Mass - 1) / step : 0;   
+            int index = (Mass > 50) ? (Mass - 1) / step : 0;
             index = (Mass > 600) ? index - 12 : index;
  
             switch (index)
@@ -63,8 +63,8 @@ public class Orbiter : MonoBehaviour
             }
 
             sound.SetNoteAndOctave(note , octave);
-            Debug.Log(note + " " + octave);
         }
+
     }
 
     private void Update()
