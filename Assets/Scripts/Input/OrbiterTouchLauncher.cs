@@ -5,7 +5,7 @@ public class OrbiterTouchLauncher : MonoBehaviour
 {
     void Update()
     {
-        if (EventSystem.current.IsPointerOverGameObject() || Models.TouchingUi)
+        if (EventSystem.current.IsPointerOverGameObject() || Models.TouchingUi  || Input.touchCount > 1 || Input.GetKeyDown(KeyCode.Mouse1))
         {
             if (_isTouching)
             {
@@ -56,13 +56,13 @@ public class OrbiterTouchLauncher : MonoBehaviour
 
     private void StartTouch(Vector3 touch)
     {
-        if (_cubeInstance == null)
+        if (_orbiter == null)
         {
             var camDist = Vector3.Distance(Camera.main.transform.position, _gravityObject.transform.position);
-            _cubeInstance = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            _cubeInstance.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(touch.x, touch.y, camDist)); ;
-            _cubeInstance.transform.localScale = Vector3.one * .12f;
-            _cubeInstance.GetComponent<Renderer>().material = _sphereMaterial;
+            _orbiter = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            _orbiter.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(touch.x, touch.y, camDist)); ;
+            _orbiter.transform.localScale = Vector3.one * .12f;
+            _orbiter.GetComponent<Renderer>().material = _sphereMaterial;
 
             _initialTouch = touch;
             _isTouching = true;
@@ -72,28 +72,28 @@ public class OrbiterTouchLauncher : MonoBehaviour
 
     private void UpdateTouch(Vector3 touch)
     {
-        if (_cubeInstance != null)
+        if (_orbiter != null)
         {
             _isTouching = true;
             var camDist = Vector3.Distance(Camera.main.transform.position, _gravityObject.transform.position);
             var touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.x, touch.y, camDist));
-            var direction = touchPosition - _cubeInstance.transform.position;
-            _velocity = 250 + Models.OrbitCameraDistance * Vector3.Distance(_cubeInstance.transform.position, touchPosition);
+            var direction = touchPosition - _orbiter.transform.position;
+            _velocity = 250 + Models.OrbitCameraDistance * Vector3.Distance(_orbiter.transform.position, touchPosition);
 
-            _cubeInstance.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(_initialTouch.x, _initialTouch.y, camDist)); ;
-            _cubeInstance.transform.rotation = Quaternion.LookRotation(direction);
-            _cubeInstance.transform.localScale = Vector3.one * Utils.RemapRange(_mass, 0, 2000, .12f, .5f);
+            _orbiter.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(_initialTouch.x, _initialTouch.y, camDist)); ;
+            _orbiter.transform.rotation = Quaternion.LookRotation(direction);
+            _orbiter.transform.localScale = Vector3.one * Utils.RemapRange(_mass, 0, 2000, .12f, .5f);
 
-            _indicatorLine.SetPosition(0, _cubeInstance.transform.position);
+            _indicatorLine.SetPosition(0, _orbiter.transform.position);
             _indicatorLine.SetPosition(1, touchPosition);
         }
     }
 
     private void ReleaseTouch(Vector3 touch)
     {
-        if (_cubeInstance != null)
+        if (_orbiter != null)
         {
-            LaunchOribiter(_cubeInstance.transform.position, _cubeInstance.transform.eulerAngles, _velocity, _mass);
+            LaunchOribiter(_orbiter.transform.position, _orbiter.transform.eulerAngles, _velocity, _mass);
         }
 
         FinishTouch();
@@ -106,7 +106,7 @@ public class OrbiterTouchLauncher : MonoBehaviour
         _mass = 25; 
         _velocity = 0;
         _isTouching = false;
-        Destroy(_cubeInstance);
+        Destroy(_orbiter);
     }
 
     public void LaunchOribiter(Vector3 position, Vector3 direction, float velocity, int mass)
@@ -126,7 +126,7 @@ public class OrbiterTouchLauncher : MonoBehaviour
     [SerializeField] private LineRenderer _indicatorLine;
 
     private Vector3 _initialTouch;
-    private GameObject _cubeInstance = null;
+    private GameObject _orbiter = null;
     private int _mass = 25;
     private float _velocity = 0;
     private bool _isTouching = false;

@@ -9,6 +9,7 @@ public class RotateWithAccelerationAndMomentum : MonoBehaviour
 
     private Vector3 _inertiaDirection = Vector3.zero;
 
+
     void Update()
     {
         // Get the magnitude of the joystick input (how far it's being pushed)
@@ -25,11 +26,14 @@ public class RotateWithAccelerationAndMomentum : MonoBehaviour
         }
         else
         {
-            // Decelerate the rotation when the joystick is released
-            if (currentRotationSpeed > 0)
-            {
-                currentRotationSpeed -= deceleration * Time.deltaTime;
-                currentRotationSpeed = Mathf.Max(currentRotationSpeed, 0); // Clamp to zero to stop rotation
+            if (_joystick.InputVector == Vector2.zero)
+            { 
+                // Decelerate the rotation when the joystick is released
+                if (currentRotationSpeed > 0)
+                {
+                    currentRotationSpeed -= deceleration * Time.deltaTime;
+                    currentRotationSpeed = Mathf.Max(currentRotationSpeed, 0); // Clamp to zero to stop rotation
+                }
             }
         }
 

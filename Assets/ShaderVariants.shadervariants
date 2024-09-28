@@ -8,6 +8,11 @@ ShaderVariantCollection:
   m_PrefabAsset: {fileID: 0}
   m_Name: ShaderVariants
   m_Shaders:
+  - first: {fileID: 10770, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
   - first: {fileID: 66, guid: 0000000000000000f000000000000000, type: 0}
     second:
       variants:
@@ -16,6 +21,8 @@ ShaderVariantCollection:
   - first: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
     second:
       variants:
+      - keywords: DIRECTIONAL
+        passType: 4
       - keywords: DIRECTIONAL LIGHTPROBE_SH
         passType: 4
       - keywords: DIRECTIONAL LIGHTPROBE_SH _EMISSION
@@ -24,15 +31,14 @@ ShaderVariantCollection:
         passType: 4
       - keywords: DIRECTIONAL
         passType: 5
+      - keywords: POINT
+        passType: 5
       - keywords: 
         passType: 8
-  - first: {fileID: 6, guid: 0000000000000000f000000000000000, type: 0}
-    second:
-      variants:
       - keywords: 
-        passType: 8
-      - keywords: SHADOWS_DEPTH
-        passType: 8
+        passType: 10
+      - keywords: 
+        passType: 11
   - first: {fileID: 104, guid: 0000000000000000f000000000000000, type: 0}
     second:
       variants:
@@ -75,11 +81,6 @@ ShaderVariantCollection:
       variants:
       - keywords: 
         passType: 0
-  - first: {fileID: 10770, guid: 0000000000000000f000000000000000, type: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
   - first: {fileID: 9007, guid: 0000000000000000f000000000000000, type: 0}
     second:
       variants:
@@ -91,6 +92,18 @@ ShaderVariantCollection:
       - keywords: 
         passType: 0
   - first: {fileID: 9103, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 10708, guid: 0000000000000000f000000000000000, type: 0}
+    second:
+      variants:
+      - keywords: 
+        passType: 1
+      - keywords: 
+        passType: 2
+  - first: {fileID: 10761, guid: 0000000000000000f000000000000000, type: 0}
     second:
       variants:
       - keywords: 
@@ -112,16 +125,3 @@ ShaderVariantCollection:
       variants:
       - keywords: BLOOM
         passType: 0
-  - first: {fileID: 4800000, guid: b581469bb435d5d4eaaf454a2ebe24f3, type: 3}
-    second:
-      variants:
-      - keywords: DIRECTIONAL
-        passType: 4
-      - keywords: DIRECTIONAL LIGHTPROBE_SH
-        passType: 4
-      - keywords: POINT
-        passType: 5
-      - keywords: 
-        passType: 10
-      - keywords: 
-        passType: 11

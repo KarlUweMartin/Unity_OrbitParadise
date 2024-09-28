@@ -41,30 +41,6 @@ public class GravityObject : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-
-        if (Input.GetMouseButtonDown(0) || Input.touchCount > 0)
-        {
-            Ray ray;
-
-            if (Input.touchCount > 0) 
-            {
-                ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-            }
-            else
-            {
-                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            }
-
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                Collider clickedCollider = hit.collider;
-                _gravitySlider.gameObject.SetActive(!_gravitySlider.gameObject.activeSelf);
-            }
-        }
-    }
 
     private MeshRenderer _meshRenderer;
     [SerializeField] private Slider _gravitySlider;

@@ -1,6 +1,6 @@
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler
 {
@@ -10,7 +10,6 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
     public void OnPointerDown(PointerEventData eventData)
     {
         OnDrag(eventData);
-
         Models.TouchingUi = true;
     }
 
@@ -33,13 +32,25 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        if (InputVector != Vector2.zero) 
+        {
+            _resetButton.gameObject.SetActive(true);
+            _resetButton.onClick.AddListener(ResetToZero);
+        }
+
+        InputDown = false;
+        Models.TouchingUi = false;
+    }
+
+    public void ResetToZero()
+    {
         InputVector = Vector2.zero;
         _joystickKnob.anchoredPosition = Vector2.zero;
-        InputDown = false;
-
-        Models.TouchingUi = false;
+        _resetButton.gameObject.SetActive(false);
+        _resetButton.onClick.RemoveListener(ResetToZero);
     }
 
     [SerializeField] private RectTransform _joystickBackground;
     [SerializeField] private RectTransform _joystickKnob;
+    [SerializeField] private Button _resetButton;
 }
