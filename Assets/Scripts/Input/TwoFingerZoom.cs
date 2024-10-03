@@ -2,14 +2,6 @@ using UnityEngine;
 
 public class TwoFingerZoom : MonoBehaviour
 {
-    public float swipeSensitivity = 0.01f;
-    public float mouseSensitivity = 0.1f;
-
-    private Vector2[] lastFingerPositions = new Vector2[2];
-    private bool isTwoFingerSwipe = false;
-    private bool isRightClickDragging = false;
-    private Vector3 lastMousePosition;
-
     void Update()
     {
         HandleTouchInput();
@@ -23,31 +15,29 @@ public class TwoFingerZoom : MonoBehaviour
             Touch touch0 = Input.GetTouch(0);
             Touch touch1 = Input.GetTouch(1);
 
+            var initialPinchDistance = .0f;
             if (touch0.phase == TouchPhase.Began || touch1.phase == TouchPhase.Began)
             {
-                lastFingerPositions[0] = touch0.position;
-                lastFingerPositions[1] = touch1.position;
-                isTwoFingerSwipe = true;
+                _lastFingerPositions[0] = touch0.position;
+                _lastFingerPositions[1] = touch1.position;
+                initialPinchDistance = Vector2.Distance(touch0.position, touch1.position);
+                _isPinching = true;
             }
             else if (touch0.phase == TouchPhase.Moved && touch1.phase == TouchPhase.Moved)
             {
-                Vector2 touch0Delta = touch0.position - lastFingerPositions[0];
-                Vector2 touch1Delta = touch1.position - lastFingerPositions[1];
+                var currentPinchDistance = Vector2.Distance(touch0.position, touch1.position);
+                var pinchDelta = currentPinchDistance - initialPinchDistance;
 
-                if (Mathf.Abs(touch0Delta.y - touch1Delta.y) < 50f)
-                {
-                    float averageDeltaY = (touch0Delta.y + touch1Delta.y) / 2f;
-                    Models.OrbitCameraDistance += averageDeltaY * swipeSensitivity;
-                    Models.OrbitCameraDistance = Mathf.Clamp(Models.OrbitCameraDistance, 5f, 35f);
+                Models.OrbitCameraDistance -= pinchDelta * _pinchSensitivity;
 
-                    lastFingerPositions[0] = touch0.position;
-                    lastFingerPositions[1] = touch1.position;
-                }
+                _lastFingerPositions[0] = touch0.position;
+                _lastFingerPositions[1] = touch1.position;
+                initialPinchDistance = currentPinchDistance;
             }
         }
         else
         {
-            isTwoFingerSwipe = false;
+            _isPinching = false;
         }
     }
 
@@ -55,21 +45,30 @@ public class TwoFingerZoom : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
-            isRightClickDragging = true;
-            lastMousePosition = Input.mousePosition;
+            _isDragging = true;
+            _lastMousePosition = Input.mousePosition;
         }
 
-        if (Input.GetMouseButton(1) && isRightClickDragging)
+        if (Input.GetMouseButton(1) && _isDragging)
         {
-            Vector3 mouseDelta = Input.mousePosition - lastMousePosition;
-            Models.OrbitCameraDistance -= mouseDelta.y * mouseSensitivity;
+            Vector3 mouseDelta = Input.mousePosition - _lastMousePosition;
+            Models.OrbitCameraDistance -= mouseDelta.y * _mouseSensitivity;
             Models.OrbitCameraDistance = Mathf.Clamp(Models.OrbitCameraDistance, 5f, 35f);
-            lastMousePosition = Input.mousePosition;
+            _lastMousePosition = Input.mousePosition;
         }
 
         if (Input.GetMouseButtonUp(1))
         {
-            isRightClickDragging = false;
+            _isDragging = false;
         }
     }
+
+    [SerializeField] private float _pinchSensitivity = 0.01f;
+    [SerializeField] private float _mouseSensitivity = 0.1f;
+
+    private Vector2[] _lastFingerPositions = new Vector2[2];
+    private bool _isPinching = false;
+    private bool _isDragging = false;
+    private Vector3 _lastMousePosition;
+
 }

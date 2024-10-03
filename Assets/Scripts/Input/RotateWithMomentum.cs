@@ -2,44 +2,34 @@ using UnityEngine;
 
 public class RotateWithAccelerationAndMomentum : MonoBehaviour
 {
-    public float maxRotationSpeed = 200f;  // Maximum speed at which the object rotates
-    public float acceleration = 50f;       // Acceleration rate when the joystick is moved
-    public float deceleration = 30f;       // Deceleration rate when the joystick is released
-    private float currentRotationSpeed = 0f;
-
-    private Vector3 _inertiaDirection = Vector3.zero;
-
-
     void Update()
     {
-        // Get the magnitude of the joystick input (how far it's being pushed)
-        float inputMagnitude = _joystick.InputVector.magnitude;
-
         if (_joystick.InputDown)
         {
-            // Set the rotation direction based on the joystick's input vector
-            _inertiaDirection = new Vector3(-_joystick.InputVector.y, _joystick.InputVector.x, 0);
-
-            // Accelerate the rotation based on the joystick input magnitude
-            currentRotationSpeed += acceleration * inputMagnitude * Time.deltaTime;
-            currentRotationSpeed = Mathf.Min(currentRotationSpeed, maxRotationSpeed * inputMagnitude); // Clamp to the maximum speed for the current input
+            _inertiaDirection = new Vector3(-_joystick.InputVector.y, _joystick.InputVector.x, 0);  
+            _currentRotationSpeed += _joystick.InputVector.magnitude;
+            _currentRotationSpeed = Mathf.Min(_currentRotationSpeed, _maxRotationSpeed * _joystick.InputVector.magnitude);
         }
         else
         {
             if (_joystick.InputVector == Vector2.zero)
-            { 
-                // Decelerate the rotation when the joystick is released
-                if (currentRotationSpeed > 0)
+            {
+                if (_currentRotationSpeed > 0)
                 {
-                    currentRotationSpeed -= deceleration * Time.deltaTime;
-                    currentRotationSpeed = Mathf.Max(currentRotationSpeed, 0); // Clamp to zero to stop rotation
+                    _currentRotationSpeed -= _deceleration * Time.deltaTime;
+                    _currentRotationSpeed = Mathf.Max(_currentRotationSpeed, 0);
                 }
             }
         }
 
-        // Apply the rotation to the object
-        transform.Rotate(_inertiaDirection, currentRotationSpeed * Time.deltaTime);
+        transform.Rotate(_inertiaDirection, _currentRotationSpeed * Time.deltaTime);
     }
 
     [SerializeField] private VirtualJoystick _joystick;
+    [SerializeField] private float _maxRotationSpeed = 200f;
+    [SerializeField] private float _aacceleration = 50f;
+    [SerializeField] private float _deceleration = 30f;
+    private float _currentRotationSpeed = 0f;
+    private Vector3 _inertiaDirection = Vector3.zero;
 }
+

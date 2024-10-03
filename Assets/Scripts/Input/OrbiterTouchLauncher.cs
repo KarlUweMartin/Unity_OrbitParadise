@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -5,12 +6,9 @@ public class OrbiterTouchLauncher : MonoBehaviour
 {
     void Update()
     {
-        if (EventSystem.current.IsPointerOverGameObject() || Models.TouchingUi  || Input.touchCount > 1 || Input.GetKeyDown(KeyCode.Mouse1))
+        if ((Input.touchCount > 1 || Input.GetKeyDown(KeyCode.Mouse1)) && _isTouching)
         {
-            if (_isTouching)
-            {
-                FinishTouch();
-            }
+            FinishTouch();
             return;
         }
 
@@ -48,14 +46,16 @@ public class OrbiterTouchLauncher : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_isTouching && _mass < 700)
+        if (_isTouching && _mass < 1200)
         {
-            _mass += 4;
+            _mass += 6;
         }
     }
 
     private void StartTouch(Vector3 touch)
     {
+        if (Models.TouchingUi || EventSystem.current.IsPointerOverGameObject()) return;
+
         if (_orbiter == null)
         {
             var camDist = Vector3.Distance(Camera.main.transform.position, _gravityObject.transform.position);
@@ -67,6 +67,7 @@ public class OrbiterTouchLauncher : MonoBehaviour
             _initialTouch = touch;
             _isTouching = true;
             _indicatorLine.enabled = true;
+            _oribterInfo.enabled = true;
         }
     }
 
@@ -86,6 +87,12 @@ public class OrbiterTouchLauncher : MonoBehaviour
 
             _indicatorLine.SetPosition(0, _orbiter.transform.position);
             _indicatorLine.SetPosition(1, touchPosition);
+            _oribterInfo.text =
+                $"Mass\n" +
+                $"<b>{_mass}</b>\n" +
+                "\n" +
+                $"Velocity\n" +
+                $"<b>{_velocity}</b>";
         }
     }
 
@@ -107,6 +114,8 @@ public class OrbiterTouchLauncher : MonoBehaviour
         _velocity = 0;
         _isTouching = false;
         Destroy(_orbiter);
+
+        _oribterInfo.enabled = false;
     }
 
     public void LaunchOribiter(Vector3 position, Vector3 direction, float velocity, int mass)
@@ -130,5 +139,7 @@ public class OrbiterTouchLauncher : MonoBehaviour
     private int _mass = 25;
     private float _velocity = 0;
     private bool _isTouching = false;
+
+    [SerializeField] private TextMeshProUGUI _oribterInfo;
 
 }

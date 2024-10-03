@@ -17,7 +17,7 @@ public static class Models
                 cam.fieldOfView = Utils.RemapRange(value, 5, 35, 75, 90);
             }
 
-            _orbitCameraDistance = value;
+            _orbitCameraDistance = Mathf.Clamp(value, 5f, 35f);
         }
     }
 
