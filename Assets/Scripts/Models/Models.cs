@@ -10,14 +10,14 @@ public static class Models
         get => _orbitCameraDistance;
         set
         {
+            value = Mathf.Clamp(value, 5f, 35f);
             if (value != _orbitCameraDistance)
             {
                 var cam = Camera.main;
                 cam.transform.localPosition = new Vector3(0,0, -value);
                 cam.fieldOfView = Utils.RemapRange(value, 5, 35, 75, 90);
             }
-
-            _orbitCameraDistance = Mathf.Clamp(value, 5f, 35f);
+            _orbitCameraDistance = value;
         }
     }
 

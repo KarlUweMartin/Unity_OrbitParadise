@@ -33,7 +33,7 @@ public class Orbiter : MonoBehaviour
         transform.eulerAngles = StartRotation;
         transform.localScale = Vector3.one * Utils.RemapRange(Mass, 0, 2000, .12f, .5f);
         _rig.mass = Mass;
-        _rig.AddForce(_rig.transform.forward * Velocity, ForceMode.Acceleration);
+        _rig.AddForce(_rig.transform.forward * Velocity, ForceMode.Impulse);
 
         if (_audio) 
         {

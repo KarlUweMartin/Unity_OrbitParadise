@@ -46,7 +46,7 @@ public class OrbiterTouchLauncher : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_isTouching && _mass < 1200)
+        if (_isTouching && _mass <= 2000)
         {
             _mass += 6;
         }
@@ -79,7 +79,9 @@ public class OrbiterTouchLauncher : MonoBehaviour
             var camDist = Vector3.Distance(Camera.main.transform.position, _gravityObject.transform.position);
             var touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.x, touch.y, camDist));
             var direction = touchPosition - _orbiter.transform.position;
-            _velocity = 250 + Models.OrbitCameraDistance * Vector3.Distance(_orbiter.transform.position, touchPosition);
+            var dist = Vector3.Distance(_orbiter.transform.position, touchPosition);
+
+            _velocity = 250 + Models.OrbitCameraDistance * dist * (dist / 2);
 
             _orbiter.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(_initialTouch.x, _initialTouch.y, camDist)); ;
             _orbiter.transform.rotation = Quaternion.LookRotation(direction);
@@ -88,11 +90,11 @@ public class OrbiterTouchLauncher : MonoBehaviour
             _indicatorLine.SetPosition(0, _orbiter.transform.position);
             _indicatorLine.SetPosition(1, touchPosition);
             _oribterInfo.text =
-                $"Mass\n" +
+                $"<size=15>Mass</size>\n" +
                 $"<b>{_mass}</b>\n" +
                 "\n" +
-                $"Velocity\n" +
-                $"<b>{_velocity}</b>";
+                $"<size=15>Velocity</size>\n" +
+                $"<b>{(int)_velocity}</b>";
         }
     }
 
