@@ -81,7 +81,7 @@ public class OrbiterTouchLauncher : MonoBehaviour
             var direction = touchPosition - _orbiter.transform.position;
             var dist = Vector3.Distance(_orbiter.transform.position, touchPosition);
 
-            _velocity = 250 + Models.OrbitCameraDistance * dist * (dist / 2);
+            _velocity = 250 + _mass * dist * (dist / 2);
 
             _orbiter.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(_initialTouch.x, _initialTouch.y, camDist)); ;
             _orbiter.transform.rotation = Quaternion.LookRotation(direction);
@@ -94,7 +94,7 @@ public class OrbiterTouchLauncher : MonoBehaviour
                 $"<b>{_mass}</b>\n" +
                 "\n" +
                 $"<size=15>Velocity</size>\n" +
-                $"<b>{(int)_velocity}</b>";
+                $"<b>{(int)(dist * 1000)}</b>";
         }
     }
 

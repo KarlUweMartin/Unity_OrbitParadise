@@ -11,6 +11,8 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
     {
         OnDrag(eventData);
         Models.TouchingUi = true;
+        _resetButton.gameObject.SetActive(true);
+        _knowArrow.enabled = true;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -27,14 +29,20 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
             _joystickKnob.anchoredPosition = new Vector2(InputVector.x * (_joystickBackground.sizeDelta.x / 2), InputVector.y * (_joystickBackground.sizeDelta.y / 2));
 
             InputDown = true;
+
+            // Calculate the angle in degrees
+            float angle = Mathf.Atan2(InputVector.y, InputVector.x) * Mathf.Rad2Deg;
+
+            // Apply rotation to the joystick knob
+            _joystickKnob.eulerAngles = new Vector3(0, 0, angle);
         }
     }
+
 
     public void OnPointerUp(PointerEventData eventData)
     {
         if (InputVector != Vector2.zero) 
         {
-            _resetButton.gameObject.SetActive(true);
             _resetButton.onClick.AddListener(ResetToZero);
         }
 
@@ -47,10 +55,12 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
         InputVector = Vector2.zero;
         _joystickKnob.anchoredPosition = Vector2.zero;
         _resetButton.gameObject.SetActive(false);
+        _knowArrow.enabled = false;
         _resetButton.onClick.RemoveListener(ResetToZero);
     }
 
     [SerializeField] private RectTransform _joystickBackground;
     [SerializeField] private RectTransform _joystickKnob;
+    [SerializeField] private Image _knowArrow;
     [SerializeField] private Button _resetButton;
 }

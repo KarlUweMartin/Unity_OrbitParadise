@@ -13,7 +13,7 @@ public class TwoFingerZoom : MonoBehaviour
             _lastDist = 0f;
         }
 
-        Models.OrbitCameraDistance += Input.mouseScrollDelta.y;
+        Models.OrbitCameraDistance -= Input.mouseScrollDelta.y;
     }
 
     void HandlePinchInput(Vector3 touch1, Vector3 touch2)
