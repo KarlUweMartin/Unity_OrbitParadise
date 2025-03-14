@@ -1,9 +1,26 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class OrbiterTouchLauncher : MonoBehaviour
 {
+    private void Start()
+    {
+        _infoCloseSequence = DOTween.Sequence();
+        _infoCloseSequence.Pause();
+
+        _infoCloseSequence.Append(_orbiterInfo.transform.DOScale(1.1f, 0.15f));
+        _infoCloseSequence.Join(_orbiterInfo.DOColor(Color.white, 0.15f));
+        _infoCloseSequence.Append(_orbiterInfo.DOFade(0, 2f));
+
+        _infoCloseSequence.OnComplete(() => 
+        {
+            _orbiterInfo.enabled = false;
+        });
+        _infoCloseSequence.SetAutoKill(false);
+    }
+
     void Update()
     {
         if ((Input.touchCount > 1 || Input.GetKeyDown(KeyCode.Mouse1)) && _isTouching)
@@ -67,7 +84,11 @@ public class OrbiterTouchLauncher : MonoBehaviour
             _initialTouch = touch;
             _isTouching = true;
             _indicatorLine.enabled = true;
-            _oribterInfo.enabled = true;
+
+            _infoCloseSequence.Complete();
+            _orbiterInfo.DOFade(.5f, 0);
+            _orbiterInfo.transform.localScale = Vector3.one;
+            _orbiterInfo.enabled = true;
         }
     }
 
@@ -89,7 +110,7 @@ public class OrbiterTouchLauncher : MonoBehaviour
 
             _indicatorLine.SetPosition(0, _orbiter.transform.position);
             _indicatorLine.SetPosition(1, touchPosition);
-            _oribterInfo.text =
+            _orbiterInfo.text =
                 $"<size=15>Mass</size>\n" +
                 $"<b>{_mass}</b>\n" +
                 "\n" +
@@ -110,6 +131,8 @@ public class OrbiterTouchLauncher : MonoBehaviour
 
     private void FinishTouch()
     {
+        if (Models.TouchingUi || EventSystem.current.IsPointerOverGameObject()) return;
+
         _indicatorLine.SetPosition(0, Vector3.zero);
         _indicatorLine.SetPosition(1, Vector3.zero);
         _mass = 25; 
@@ -117,7 +140,7 @@ public class OrbiterTouchLauncher : MonoBehaviour
         _isTouching = false;
         Destroy(_orbiter);
 
-        _oribterInfo.enabled = false;
+        _infoCloseSequence.Restart();
     }
 
     public void LaunchOribiter(Vector3 position, Vector3 direction, float velocity, int mass)
@@ -142,6 +165,8 @@ public class OrbiterTouchLauncher : MonoBehaviour
     private float _velocity = 0;
     private bool _isTouching = false;
 
-    [SerializeField] private TextMeshProUGUI _oribterInfo;
+    [SerializeField] private TextMeshProUGUI _orbiterInfo;
+
+    private Sequence _infoCloseSequence;
 
 }

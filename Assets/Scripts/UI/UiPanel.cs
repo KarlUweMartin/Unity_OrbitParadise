@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -9,7 +8,9 @@ public class UiPanel : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private void Start()
     {
         _onOffToggle.onValueChanged.AddListener(gameObject.SetActive);
+        _onOffToggle.isOn = false;
     }
+
 
     public void OnPointerUp(PointerEventData eventData)
     {
@@ -21,6 +22,6 @@ public class UiPanel : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         Models.TouchingUi = false;
     }
 
-    private RectTransform _rect;
+
     [SerializeField] private Toggle _onOffToggle;
 }
